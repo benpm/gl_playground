@@ -7,10 +7,18 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+# Limit permissions of GITHUB_TOKEN to minimum required
+permissions:
+  contents: read
+
 jobs:
   build-wasm:
     runs-on: ubuntu-latest
     
+    # Specific permissions for this job
+    permissions:
+      contents: write  # Needed for gh-pages deployment
+      
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4

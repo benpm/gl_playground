@@ -7,10 +7,18 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+# Limit permissions of GITHUB_TOKEN to minimum required
+permissions:
+  contents: read
+
 jobs:
   build-linux:
     runs-on: ubuntu-latest
     
+    # Specific permissions for this job
+    permissions:
+      contents: read
+      
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -44,6 +52,10 @@ jobs:
   build-windows:
     runs-on: windows-latest
     
+    # Specific permissions for this job
+    permissions:
+      contents: read
+      
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
