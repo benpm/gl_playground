@@ -51,7 +51,9 @@ emcmake cmake .. \
     -DCMAKE_TOOLCHAIN_FILE=${EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake
 
 echo -e "${GREEN}Building WebAssembly...${NC}"
-emmake make -j$(nproc)
+# Use NPROC environment variable if set, otherwise try nproc command, fall back to 4
+JOBS=${NPROC:-$(nproc 2>/dev/null || echo 4)}
+emmake make -j${JOBS}
 
 # Create distribution directory
 cd ..

@@ -127,8 +127,22 @@
             },
             canvas: (function() {
                 var canvas = document.getElementById('canvas');
-                canvas.width = 1024;
-                canvas.height = 768;
+                // Make canvas responsive to window size
+                var updateCanvasSize = function() {
+                    var maxWidth = Math.min(window.innerWidth - 40, 1024);
+                    var maxHeight = Math.min(window.innerHeight - 300, 768);
+                    var aspectRatio = 1024 / 768;
+                    
+                    if (maxWidth / aspectRatio > maxHeight) {
+                        canvas.width = maxHeight * aspectRatio;
+                        canvas.height = maxHeight;
+                    } else {
+                        canvas.width = maxWidth;
+                        canvas.height = maxWidth / aspectRatio;
+                    }
+                };
+                updateCanvasSize();
+                window.addEventListener('resize', updateCanvasSize);
                 return canvas;
             })(),
             setStatus: function(text) {
