@@ -97,12 +97,14 @@ if [ "$all_ok" = true ]; then
     echo ""
     echo -e "You're ready to build! Run:"
     echo -e "  ${BLUE}./build_wasm.sh${NC}"
+    exit_code=0
 else
     echo -e "${RED}✗ Some tools are missing${NC}"
     echo ""
     echo -e "Please install missing tools before building."
     echo -e "See ${BLUE}WEBGPU_BUILD.md${NC} for detailed instructions."
+    exit_code=1
 fi
 echo -e "${BLUE}======================================${NC}"
 
-exit $([ "$all_ok" = true ] && echo 0 || echo 1)
+exit $exit_code

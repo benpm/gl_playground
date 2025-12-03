@@ -34,7 +34,7 @@ function(configure_emscripten_target target_name)
             -sFULL_ES3=1
             -sWASM=1
             -sEXPORT_ALL=1
-            -sEXPORTED_RUNTIME_METHODS=['ccall','cwrap']
+            "-sEXPORTED_RUNTIME_METHODS=[\"ccall\",\"cwrap\"]"
             --preload-file ${CMAKE_SOURCE_DIR}/resources@/resources
             --shell-file ${CMAKE_SOURCE_DIR}/shell.html
         )

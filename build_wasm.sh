@@ -52,6 +52,7 @@ emcmake cmake .. \
 
 echo -e "${GREEN}Building WebAssembly...${NC}"
 # Use NPROC environment variable if set, otherwise try nproc command, fall back to 4
+# The fallback of 4 cores provides reasonable parallelism on most systems
 JOBS=${NPROC:-$(nproc 2>/dev/null || echo 4)}
 emmake make -j${JOBS}
 

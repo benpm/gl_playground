@@ -20,8 +20,9 @@ jobs:
     - name: Setup Emscripten
       uses: mymindstorm/setup-emsdk@v14
       with:
-        # Using a stable version known to work. Update periodically.
-        # To use latest: change to 'latest'
+        # Using 3.1.51 as a stable, tested version
+        # Update periodically to newer versions after testing
+        # To always use latest: change to 'latest'
         version: '3.1.51'
         actions-cache-folder: 'emsdk-cache'
 
