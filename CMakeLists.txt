@@ -63,3 +63,10 @@ endif()
 
 
 target_link_libraries(app glfw ${OPENGL_LIBRARIES} spdlog imgui EnTT spng cxxopts)
+
+# Configure Emscripten-specific settings if building for WebAssembly
+# This must be called after the target is created
+include(cmake/emscripten.cmake)
+if(EMSCRIPTEN)
+    configure_emscripten_target(app)
+endif()

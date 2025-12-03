@@ -16,7 +16,9 @@ Before doing anything you need to download the externally-hosted assets. On Linu
 
 ## Building
 
-### Linux
+### Native Builds
+
+#### Linux
 You might need to install a couple packages:
 - `libxinerama-dev`
 - `libglu1-mesa-dev`
@@ -29,11 +31,30 @@ cmake -B build
 cmake --build build
 ```
 
-### Windows
+#### Windows
 Open project as a CMake project, click "Build All", and hope for the best. You might want to install Ninja.
 
+### WebAssembly Build (NEW!)
+
+Build for the web using Emscripten:
+```bash
+./build_wasm.sh
+```
+
+See [WEBGPU_BUILD.md](WEBGPU_BUILD.md) for detailed WebAssembly build instructions.
+
 ## Running
+
+### Native
 `./build/app` or `.\build\app.exe`
+
+### Web
+After building with `build_wasm.sh`:
+```bash
+cd dist
+python3 -m http.server 8000
+```
+Then open http://localhost:8000 in a WebGPU-compatible browser.
 
 ## Dependencies
 These dependencies are either included or managed by CMake and built locally:
