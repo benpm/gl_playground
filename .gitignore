@@ -10,6 +10,7 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 /build
+/build-wasm
 /reports/*.pdf
 /out
 .vs
@@ -18,3 +19,10 @@ _deps
 *.ilk
 imgui.ini
 /assets.zip
+
+# WebAssembly build artifacts
+*.wasm
+*.js
+*.data
+/dist
+/emsdk-cache

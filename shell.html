@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GL Playground - WebGPU/WebAssembly</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            padding: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #4CAF50;
+        }
+        
+        .description {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #aaaaaa;
+        }
+        
+        #canvas {
+            display: block;
+            margin: 0 auto;
+            border: 2px solid #4CAF50;
+            border-radius: 8px;
+            background-color: #000000;
+        }
+        
+        .controls {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #2a2a2a;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        #status {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #333333;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        
+        #progress {
+            width: 100%;
+            height: 20px;
+            margin-top: 10px;
+            border-radius: 10px;
+            overflow: hidden;
+            background-color: #333333;
+        }
+        
+        #progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .loading {
+            display: none;
+        }
+        
+        .loaded {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>GL Playground</h1>
+        <p class="description">3D Graphics Playground running on WebGPU/WebAssembly</p>
+        
+        <canvas id="canvas" oncontextmenu="event.preventDefault()"></canvas>
+        
+        <div class="controls">
+            <div id="status" class="loading">Loading...</div>
+            <div id="progress" class="loading">
+                <div id="progress-bar"></div>
+            </div>
+            <div class="loaded">
+                <p>Controls:</p>
+                <ul style="list-style: none; padding: 0;">
+                    <li>🖱️ Mouse: Rotate camera</li>
+                    <li>⌨️ WASD: Move camera</li>
+                    <li>🎮 Space/Shift: Move up/down</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script type='text/javascript'>
+        var statusElement = document.getElementById('status');
+        var progressElement = document.getElementById('progress');
+        var progressBar = document.getElementById('progress-bar');
+        
+        var Module = {
+            preRun: [],
+            postRun: [],
+            print: (function() {
+                return function(text) {
+                    console.log(text);
+                };
+            })(),
+            printErr: function(text) {
+                console.error(text);
+            },
+            canvas: (function() {
+                var canvas = document.getElementById('canvas');
+                canvas.width = 1024;
+                canvas.height = 768;
+                return canvas;
+            })(),
+            setStatus: function(text) {
+                if (!Module.setStatus.last) Module.setStatus.last = { time: Date.now(), text: '' };
+                if (text === Module.setStatus.last.text) return;
+                
+                var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
+                var now = Date.now();
+                
+                if (m && now - Module.setStatus.last.time < 30) return;
+                Module.setStatus.last.time = now;
+                Module.setStatus.last.text = text;
+                
+                if (m) {
+                    text = m[1];
+                    progressBar.style.width = (parseInt(m[2])/parseInt(m[4])*100) + '%';
+                } else {
+                    progressBar.style.width = '0%';
+                }
+                
+                statusElement.innerHTML = text;
+            },
+            totalDependencies: 0,
+            monitorRunDependencies: function(left) {
+                this.totalDependencies = Math.max(this.totalDependencies, left);
+                Module.setStatus(left ? 'Preparing... (' + (this.totalDependencies-left) + '/' + this.totalDependencies + ')' : 'All downloads complete.');
+            },
+            onRuntimeInitialized: function() {
+                document.querySelectorAll('.loading').forEach(el => el.style.display = 'none');
+                document.querySelectorAll('.loaded').forEach(el => el.style.display = 'block');
+                statusElement.style.display = 'none';
+            }
+        };
+        
+        Module.setStatus('Downloading...');
+        
+        window.onerror = function(event) {
+            Module.setStatus('Exception thrown, see JavaScript console');
+            Module.setStatus = function(text) {
+                if (text) Module.printErr('[post-exception status] ' + text);
+            };
+        };
+    </script>
+    {{{ SCRIPT }}}
+</body>
+</html>
